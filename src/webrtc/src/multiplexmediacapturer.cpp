@@ -43,13 +43,13 @@ MultiplexMediaCapturer::~MultiplexMediaCapturer()
 }
 
 
-void MultiplexMediaCapturer::openFile(const std::string& file, bool loop, bool realtime)
+void MultiplexMediaCapturer::openFile(const std::string& file, bool loop, bool realtime, const std::string& format)
 {
     // Open the capture file
     _videoCapture->setLoopInput(loop);
     _videoCapture->setLimitFramerate(true);
     _videoCapture->setRealtimePTS(realtime);
-    _videoCapture->openFile(file);
+    _videoCapture->openFile(file, format);
     _videoCapture->Closing += [&]() {
         Closing.emit();
     };

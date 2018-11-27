@@ -35,7 +35,8 @@ public:
     MultiplexMediaCapturer();
     ~MultiplexMediaCapturer();
 
-    void openFile(const std::string& file, bool loop = true, bool realtime = false);
+    void openFile(const std::string& file, bool loop = true,
+        bool realtime = false, const std::string& format = "");
 
     void addMediaTracks(webrtc::PeerConnectionFactoryInterface* factory,
                         webrtc::MediaStreamInterface* stream);

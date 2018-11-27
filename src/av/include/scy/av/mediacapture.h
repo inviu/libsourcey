@@ -40,7 +40,7 @@ public:
     MediaCapture();
     virtual ~MediaCapture();
 
-    virtual void openFile(const std::string& file);
+    virtual void openFile(const std::string& file, const std::string& format = "");
     // #ifdef HAVE_FFMPEG_AVDEVICE
     // virtual void openCamera(const std::string& device, int width = -1, int height = -1, double framerate = -1);
     // virtual void openMicrophone(const std::string& device, int channels = -1, int sampleRate = -1);

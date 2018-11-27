@@ -75,10 +75,18 @@ void MediaCapture::close()
 }
 
 
-void MediaCapture::openFile(const std::string& file)
+void MediaCapture::openFile(const std::string& file, const std::string& format)
 {
     LTrace("Opening file: ", file)
-    openStream(file, nullptr, nullptr);
+    AVInputFormat* fmt = nullptr;
+    if (!format.empty()) {
+        fmt = av_find_input_format(format.c_str());
+        if (!fmt) {
+            throw std::runtime_error("Unknown input format " + format);
+        }
+    }
+
+    openStream(file, fmt, nullptr);
 }
 
 
