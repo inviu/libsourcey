@@ -18,8 +18,8 @@
 #include <string.h>
 
 #ifdef SCY_WIN
-#include <windows.h>
 #include <winsock2.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif

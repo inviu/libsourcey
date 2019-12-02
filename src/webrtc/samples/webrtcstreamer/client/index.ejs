@@ -20,9 +20,12 @@
     <script type="text/javascript" src="symple.player.webrtc.js"></script>
     <script>
 
+        let serverIp = location.hostname;
+
         // Symple client options
         CLIENT_OPTIONS = {
-            url: 'http://localhost:<%- port %>',
+            // url: 'http://localhost:<%- port %>',
+            url: 'http://' + serverIp + ':<%- port %>',
             // url: 'http://sympleserver.sourcey.com:<%- port %>',
             // secure: true,
             peer: <%- JSON.stringify(peer) %>

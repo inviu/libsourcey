@@ -37,12 +37,15 @@ public:
 
     void openFile(const std::string& file, bool loop = true,
         bool realtime = false, const std::string& format = "");
+    void openStreamr();
 
     void addMediaTracks(webrtc::PeerConnectionFactoryInterface* factory,
                         webrtc::MediaStreamInterface* stream);
 
     void start();
     void stop();
+
+    void onEncodedFrameReady(std::shared_ptr<std::vector<std::vector<uint8_t>>> frame);
 
     rtc::scoped_refptr<AudioPacketModule> getAudioModule();
     VideoPacketSource* createVideoSource();

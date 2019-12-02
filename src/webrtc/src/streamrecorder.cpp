@@ -8,6 +8,7 @@
 /// @addtogroup webrtc
 /// @{
 
+#include <winsock2.h>
 
 #include "scy/webrtc/streamrecorder.h"
 

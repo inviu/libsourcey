@@ -22,6 +22,7 @@
 #ifndef UV_WIN_WINAPI_H_
 #define UV_WIN_WINAPI_H_
 
+#define _WINSOCKAPI_ 
 #include <windows.h>
 
 

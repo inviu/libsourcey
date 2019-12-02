@@ -8,6 +8,7 @@
 /// @addtogroup webrtc
 /// @{
 
+#define _WINSOCKAPI_
 
 #include "scy/webrtc/peer.h"
 #include "scy/webrtc/peermanager.h"

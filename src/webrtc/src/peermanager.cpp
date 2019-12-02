@@ -8,10 +8,10 @@
 /// @addtogroup webrtc
 /// @{
 
+#include <winsock2.h>
 
 #include "scy/webrtc/peermanager.h"
 #include "scy/memory.h"
-
 
 using std::endl;
 

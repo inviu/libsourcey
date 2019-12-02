@@ -8,6 +8,7 @@
 /// @addtogroup webrtc
 /// @{
 
+#include <WinSock2.h>
 
 #include "scy/webrtc/multiplexmediacapturer.h"
 
@@ -70,6 +71,18 @@ void MultiplexMediaCapturer::openFile(const std::string& file, bool loop, bool r
         // _videoCapture->video()->oparams.width = capture_format.width;
         // _videoCapture->video()->oparams.height = capture_format.height;
     }
+}
+
+
+void MultiplexMediaCapturer::openStreamr()
+{
+    _videoCapture->setLoopInput(false);
+    _videoCapture->setLimitFramerate(true);
+    _videoCapture->setRealtimePTS(true);
+    _videoCapture->openStreamr();
+    _videoCapture->Closing += [&]() {
+        Closing.emit();
+    };
 }
 
 
@@ -139,6 +152,11 @@ void MultiplexMediaCapturer::start()
 void MultiplexMediaCapturer::stop()
 {
     _stream.stop();
+}
+
+void MultiplexMediaCapturer::onEncodedFrameReady(std::shared_ptr<std::vector<std::vector<uint8_t> > > frame)
+{
+    _videoCapture->onStreamrEncodedFrame(frame);
 }
 
 

@@ -8,6 +8,7 @@
 /// @addtogroup webrtc
 /// @{
 
+#include <WinSock2.h>
 
 #include "scy/webrtc/yuvframegenerator.h"
 

@@ -9,6 +9,8 @@
 /// @{
 
 
+#include <winsock2.h>
+
 #include "scy/webrtc/audiopacketmodule.h"
 
 #ifdef HAVE_FFMPEG
@@ -86,8 +88,8 @@ void AudioPacketModule::onAudioCaptured(av::AudioPacket& packet)
 {
     LTrace("Audio frame captured")
 
-    // assert(_processThread->IsCurrent());
-    rtc::CritScope cs(&_critCallback);
+        // assert(_processThread->IsCurrent());
+        rtc::CritScope cs(&_critCallback);
     if (!_audioCallback || !_recording) {
         return;
     }
@@ -203,8 +205,8 @@ void AudioPacketModule::sendFrameP()
 
     LTrace("Send audio")
     if (_audioCallback->RecordedDataIsAvailable(
-            samples, kNumberSamples, kBytesPerSample, kNumberOfChannels,
-            kSamplesPerSecond, kTotalDelayMs, kClockDriftMs, current_mic_level,
+                                 samples, kNumberSamples, kBytesPerSample, kNumberOfChannels,
+                                 kSamplesPerSecond, kTotalDelayMs, kClockDriftMs, current_mic_level,
             key_pressed, current_mic_level) != 0) {
         assert(false);
     }
@@ -308,16 +310,16 @@ int16_t AudioPacketModule::RecordingDevices()
 }
 
 int32_t AudioPacketModule::PlayoutDeviceName(uint16_t /*index*/,
-    char /*name*/[webrtc::kAdmMaxDeviceNameSize],
-    char /*guid*/[webrtc::kAdmMaxGuidSize])
+                                             char /*name*/[webrtc::kAdmMaxDeviceNameSize],
+                                             char /*guid*/[webrtc::kAdmMaxGuidSize])
 {
     assert(false);
     return 0;
 }
 
 int32_t AudioPacketModule::RecordingDeviceName(uint16_t /*index*/,
-    char /*name*/[webrtc::kAdmMaxDeviceNameSize],
-    char /*guid*/[webrtc::kAdmMaxGuidSize])
+                                               char /*name*/[webrtc::kAdmMaxDeviceNameSize],
+                                               char /*guid*/[webrtc::kAdmMaxGuidSize])
 {
     assert(false);
     return 0;
@@ -637,7 +639,8 @@ int32_t AudioPacketModule::PlayoutDelay(uint16_t* delay_ms) const
 }
 
 
-} } // namespace scy::wrtc
+} // namespace wrtc
+} // namespace scy
 
 
 #endif // HAVE_FFMPEG

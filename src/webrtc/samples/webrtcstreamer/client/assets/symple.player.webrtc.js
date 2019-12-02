@@ -59,6 +59,7 @@ Symple.Player.Engine.WebRTC = Symple.Player.Engine.extend({
         if (typeof(this.video) == 'undefined') {
             this.video = document.createElement('video');
             this.video.autoplay = true;
+            this.video.muted = true;
             this.player.screen.prepend(this.video);
         }
     },
@@ -237,13 +238,15 @@ Symple.Player.Engine.WebRTC = Symple.Player.Engine.extend({
             }
         };
         this.pc.onaddstream = function(event) {
-            Symple.log('symple:webrtc: remote stream added', URL.createObjectURL(event.stream));
+            // Symple.log('symple:webrtc: remote stream added', URL.createObjectURL(event.stream));
+            Symple.log('symple:webrtc: remote stream added');
 
             // Set the state to playing once candidates have completed gathering.
             // This is the best we can do until ICE onstatechange is implemented.
             self.setState('playing');
 
-            self.video.src = URL.createObjectURL(event.stream);
+            // self.video.src = URL.createObjectURL(event.stream);
+            self.video.srcObject = event.stream;
             self.video.play();
 
             // Store the active stream

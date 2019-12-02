@@ -8,16 +8,18 @@
 /// @addtogroup webrtc
 /// @{
 
+#define _WINSOCKAPI_
 
 #include "scy/webrtc/peerfactorycontext.h"
 #include "scy/webrtc/fakeaudiodevicemodule.h"
 //#include "pc/test/fakeaudiocapturemodule.h"
 #include "scy/logger.h"
 
-#include "api/peerconnectionfactoryproxy.h"
-#include "api/peerconnectionproxy.h"
+#include "api/create_peerconnection_factory.h"
 #include "api/audio_codecs/builtin_audio_decoder_factory.h"
 #include "api/audio_codecs/builtin_audio_encoder_factory.h"
+#include "api/peerconnectionfactoryproxy.h"
+#include "api/peerconnectionproxy.h"
 #include "p2p/base/basicpacketsocketfactory.h"
 #include "p2p/client/basicportallocator.h"
 #include "pc/peerconnection.h"
@@ -78,7 +80,8 @@ void PeerFactoryContext::initCustomNetworkManager()
 }
 
 
-} } // namespace scy::wrtc
+} // namespace wrtc
+} // namespace scy
 
 
 /// @\}

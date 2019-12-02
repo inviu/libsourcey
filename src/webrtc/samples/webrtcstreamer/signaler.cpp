@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string>
 
+#include <WinSock2.h>
+
 #include "scy/webrtc/audiopacketmodule.h"
 #include "scy/webrtc/multiplexmediacapturer.h"
 #include "scy/webrtc/videopacketsource.h"

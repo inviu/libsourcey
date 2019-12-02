@@ -12,6 +12,7 @@
 #ifndef SCY_WebRTC_WEBRTC_UTIL_H
 #define SCY_WebRTC_WEBRTC_UTIL_H
 
+#define _WINSOCKAPI_
 
 #include "scy/webrtc/webrtc.h"
 

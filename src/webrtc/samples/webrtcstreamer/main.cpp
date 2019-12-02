@@ -7,6 +7,7 @@
 //
 ///
 
+#include <winsock2.h>
 
 #include "scy/idler.h"
 #include "scy/logger.h"

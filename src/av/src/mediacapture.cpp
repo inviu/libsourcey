@@ -13,7 +13,9 @@
 
 #ifdef HAVE_FFMPEG
 
+#include "scy/av/packet.h"
 #include "scy/av/devicemanager.h"
+#include "scy/av/fakeVideoDecoder.h"
 #include "scy/logger.h"
 #include "scy/platform.h"
 
@@ -38,6 +40,8 @@ MediaCapture::MediaCapture()
     , _looping(false)
     , _realtime(false)
     , _ratelimit(false)
+    , _captureFromStreamr(false)
+    , _encodedFrames(true, "_encodedFrames")
 {
     initializeFFmpeg();
 }
@@ -128,17 +132,32 @@ void MediaCapture::openStream(const std::string& filename, AVInputFormat* inputF
 }
 
 
+void MediaCapture::openStreamr()
+{
+    _captureFromStreamr = true;
+
+    _video = new FakeVideoDecoder(nullptr);
+    _video->oparams.width = 1920;
+    _video->oparams.height = 1080;
+    _video->oparams.fps = 60;
+    _video->oparams.pixelFmt = "yuv420p";
+}
+
+
 void MediaCapture::start()
 {
     LTrace("Starting")
 
     std::lock_guard<std::mutex> guard(_mutex);
-    assert(_video || _audio);
+    assert(_video || _audio || _captureFromStreamr);
 
-    if ((_video || _audio) && !_thread.running()) {
+    if ((_video || _audio || _captureFromStreamr) && !_thread.running()) {
         LTrace("Initializing thread")
         _stopping = false;
-        _thread.start(std::bind(&MediaCapture::run, this));
+        if (_captureFromStreamr)
+            _thread.start(std::bind(&MediaCapture::runStreamr, this));
+        else
+            _thread.start(std::bind(&MediaCapture::run, this));
     }
 }
 
@@ -163,6 +182,99 @@ void MediaCapture::emit(IPacket& packet)
     LTrace("Emit: ", packet.size())
 
     emitter.emit(packet);
+}
+
+
+void MediaCapture::onStreamrEncodedFrame(EncodedFramePtr frame)
+{
+    _encodedFrames.queueInput(frame);
+}
+
+
+void MediaCapture::runStreamr()
+{
+    LTrace("Running capture from streamr loop");
+
+    // create a fake yuv420 frame
+
+    const int width = 1920, height = 1080, bytesPerFrame = width * height * 3 / 2;
+    _fakeFrameBytes = (uint8_t*)malloc(bytesPerFrame);
+
+    uint8_t *data[4] = { _fakeFrameBytes, data[0] + width*height, data[1] + width*height/4, nullptr };
+    int lineSizes[4] = { width, width/2, width/2, 0 };
+
+    VideoCodec format(1920, 1080, 60.0);
+    int64_t time = 0;
+
+    PlanarVideoPacket videoPacket(data, lineSizes, _video->oparams.pixelFmt, width, height, time);
+
+    try {
+        // Looping variables
+        int64_t videoPtsOffset = 0;
+
+        // Realtime variables
+        int64_t startTime = time::hrtime()/1000;
+
+        // Rate limiting variables
+        int64_t lastTimestamp = time::hrtime()/1000;
+        // int64_t frameInterval = _video ? fpsToInterval(int(_video->iparams.fps)) : 0;
+        // FIXME:  pretend fps is 60 for now
+        int64_t frameInterval = fpsToInterval(60);
+
+        // Read input packets until complete
+        while (EncodedFramePtr frame = _encodedFrames.nextInput())
+        {
+            STrace << "Read frame encoded frame." << endl;
+
+            if (_stopping)
+                break;
+
+            // Realtime PTS calculation in microseconds
+            // .. but time::hrtime() returns nanosecon
+            int64_t pts = time::hrtime()/1000 - startTime;
+
+            // no idea if these make any sense
+            videoPacket.time = pts;
+            videoPacket.source = nullptr;
+            videoPacket.opaque = nullptr;
+
+            // copy the encoded bitstream into the frame memory.
+
+            // first a magic value and then the size in bytes
+            struct Header { uint32_t magic, byteSize; };
+            Header *header = (Header*)_fakeFrameBytes;
+            header->magic = 0xaabbccdd;
+
+            uint8_t *cursor = _fakeFrameBytes + sizeof(header);
+            uint32_t totalBytes = 0;
+            for (auto &bytes : *frame)
+            {
+                totalBytes += (uint32_t)bytes.size();
+
+                memcpy(cursor, bytes.data(), bytes.size());
+                cursor += bytes.size();
+            }
+
+            header->byteSize = totalBytes;
+
+            emit(videoPacket);
+        }
+    } catch (std::exception& exc) {
+        _error = exc.what();
+        LError("Decoder Error: ", _error)
+    } catch (...) {
+        _error = "Unknown Error";
+        LError("Unknown Error")
+    }
+
+    if (_stopping || !_looping) {
+        LTrace("Exiting")
+        _stopping = true;
+        Closing.emit();
+    }
+
+    free(_fakeFrameBytes);
+    _fakeFrameBytes = nullptr;
 }
 
 
