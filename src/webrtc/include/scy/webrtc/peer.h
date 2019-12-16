@@ -104,7 +104,8 @@ protected:
     virtual void AddRef() const override { return; }
     virtual rtc::RefCountReleaseStatus Release() const override { return rtc::RefCountReleaseStatus::kDroppedLastRef; }
 
-protected:
+//protected:
+public:
     PeerManager* _manager;
     PeerFactoryContext* _context;
     std::string _peerid;

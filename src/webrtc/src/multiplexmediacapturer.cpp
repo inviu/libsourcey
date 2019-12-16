@@ -41,6 +41,13 @@ MultiplexMediaCapturer::MultiplexMediaCapturer()
 
 MultiplexMediaCapturer::~MultiplexMediaCapturer()
 {
+    auto source = dynamic_cast<PacketStreamAdapter*>(_videoCapture.get());
+    if (!source) {
+        assert(0 && "invalid adapter");
+        throw std::runtime_error("Cannot attach incompatible packet source.");
+    }
+
+    _stream.detachSource(source);
 }
 
 

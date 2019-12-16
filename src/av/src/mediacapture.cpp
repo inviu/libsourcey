@@ -169,6 +169,7 @@ void MediaCapture::stop()
     std::lock_guard<std::mutex> guard(_mutex);
 
     _stopping = true;
+    onStreamrEncodedFrame(EncodedFramePtr());
     if (_thread.running()) {
         LTrace("Terminating thread")
         _thread.cancel();
