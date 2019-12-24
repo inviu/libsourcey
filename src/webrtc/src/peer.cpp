@@ -19,81 +19,8 @@
 using std::endl;
 
 
-extern void print(const char* s, size_t offset);
-
 namespace scy {
 namespace wrtc {
-
-
-static void dumpOffsets(const scy::wrtc::Peer *p)
-{
-#define dump(_name) print(#_name ":\t\t", size_t(& (p->_name)) - size_t(p))
-
-    dump(_manager);
-    dump(_context);
-    dump(_peerid);
-    dump(_token);
-    dump(_mode);
-    dump(_config);
-    dump(_constraints);
-    dump(_offerAnswerOptions);
-    dump(_peerConnection);
-    dump(_stream);
-    dump(_portAllocator);
-
-    print("size of RTCConfiguration is ", sizeof(webrtc::PeerConnectionInterface::RTCConfiguration));
-
-#undef dump
-}
-
-#define EXPAND_QUOTE_HELPER(x) #x
-#define EXPAND_QUOTE(x) EXPAND_QUOTE_HELPER(x)
-
-static void dumpOffsets(const webrtc::PeerConnectionInterface::RTCConfiguration *p)
-{
-//#if defined(_MSC_VER) && _MSC_VER >= 1910 && \
-//    ((defined(_MSVC_LANG) && _MSVC_LANG > 201402) || __cplusplus > 201402)
-
-#define mval(_name) print(#_name " has value " EXPAND_QUOTE(_name), -1)
-
-    mval(ABSL_HAVE_STD_OPTIONAL);
-    mval(_MSC_VER);
-    mval(_MSVC_LANG);
-    mval(__cplusplus);
-
-#undef mval
-
-#define dump(_name) print(#_name ":\t\t", size_t(& (p->_name)) - size_t(p))
-
-    dump(servers);
-    dump(type);
-    dump(bundle_policy);
-    dump(rtcp_mux_policy);
-    dump(certificates);
-    dump(ice_candidate_pool_size);
-    dump(disable_ipv6);
-    dump(disable_ipv6_on_wifi);
-    dump(max_ipv6_networks);
-    dump(disable_link_local_networks);
-    dump(enable_rtp_data_channel);
-    dump(screencast_min_bitrate);
-    dump(combined_audio_video_bwe);
-    dump(enable_dtls_srtp);
-    dump(tcp_candidate_policy);
-    dump(candidate_network_policy);
-    dump(audio_jitter_buffer_max_packets);
-    dump(audio_jitter_buffer_fast_accelerate);
-    dump(audio_jitter_buffer_min_delay_ms);
-    dump(ice_connection_receiving_timeout);
-    dump(ice_backup_candidate_pair_ping_interval);
-    dump(continual_gathering_policy);
-    dump(prioritize_most_likely_ice_candidate_pairs);
-    dump(media_config);
-    dump(prune_turn_ports);
-
-#undef dump
-}
-
 
 Peer::Peer(PeerManager* manager,
            PeerFactoryContext* context,
@@ -116,12 +43,6 @@ Peer::Peer(PeerManager* manager,
     // _constraints.SetMandatoryReceiveAudio(true);
     // _constraints.SetMandatoryReceiveVideo(true);
     // _constraints.SetAllowDtlsSctpDataChannels();
-
-    size_t peerSize = sizeof(Peer);
-    printf("libsourcey things size of Peer is %d\n", peerSize);
-
-    // dumpOffsets(this);
-    dumpOffsets(& _config);
 }
 
 
