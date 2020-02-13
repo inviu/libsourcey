@@ -27,6 +27,28 @@ extern "C" {
 
 using std::endl;
 
+namespace webrtc {
+
+// uh-oh, terrible hack ahead.  primitive communication with streamr.
+
+
+struct ToStreamr
+{
+    std::function<void()> encoderInit;
+    std::function<void()> requestIdrFrame;
+    std::function<void(int)> updataVideoBitrate;
+
+    std::function<int()> getMaxVideoFps;
+    std::function<int()> getMaxVideoKbps;
+    std::function<int()> getVideoWidth;
+    std::function<int()> getVideoHeight;
+    std::function<bool()> getEnableAutoBitrateAdjustment;
+    std::function<int()> getMinIdrIntervalMs;
+};
+
+extern ToStreamr& getToStreamr();
+
+} // namespace webrtc
 
 namespace scy {
 namespace av {
@@ -137,9 +159,9 @@ void MediaCapture::openStreamr()
     _captureFromStreamr = true;
 
     _video = new FakeVideoDecoder(nullptr);
-    _video->oparams.width = 1920;
-    _video->oparams.height = 1080;
-    _video->oparams.fps = 60;
+    _video->oparams.width = webrtc::getToStreamr().getVideoWidth();
+    _video->oparams.height = webrtc::getToStreamr().getVideoHeight();
+    _video->oparams.fps = webrtc::getToStreamr().getMaxVideoFps();
     _video->oparams.pixelFmt = "yuv420p";
 }
 
@@ -197,14 +219,18 @@ void MediaCapture::runStreamr()
     LTrace("Running capture from streamr loop");
 
     // create a fake yuv420 frame
-
-    const int width = 1920, height = 1080, bytesPerFrame = width * height * 3 / 2;
+    //3840x2160
+    //codec_.width = getToStreamr().getVideoWidth();
+    //codec_.height = getToStreamr().getVideoHeight();
+    const int width = webrtc::getToStreamr().getVideoWidth(), 
+        height = webrtc::getToStreamr().getVideoHeight(),
+        bytesPerFrame = width * height * 3 / 2;
     _fakeFrameBytes = (uint8_t*)malloc(bytesPerFrame);
 
     uint8_t *data[4] = { _fakeFrameBytes, data[0] + width*height, data[1] + width*height/4, nullptr };
     int lineSizes[4] = { width, width/2, width/2, 0 };
 
-    VideoCodec format(1920, 1080, 60.0);
+    VideoCodec format(width, height, webrtc::getToStreamr().getMaxVideoFps());
     int64_t time = 0;
 
     PlanarVideoPacket videoPacket(data, lineSizes, _video->oparams.pixelFmt, width, height, time);
@@ -220,7 +246,7 @@ void MediaCapture::runStreamr()
         int64_t lastTimestamp = time::hrtime()/1000;
         // int64_t frameInterval = _video ? fpsToInterval(int(_video->iparams.fps)) : 0;
         // FIXME:  pretend fps is 60 for now
-        int64_t frameInterval = fpsToInterval(60);
+        int64_t frameInterval = fpsToInterval(webrtc::getToStreamr().getMaxVideoFps());
 
         // Read input packets until complete
         while (EncodedFramePtr frame = _encodedFrames.nextInput())
