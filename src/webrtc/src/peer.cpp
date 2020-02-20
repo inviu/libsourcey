@@ -15,6 +15,8 @@
 #include "scy/webrtc/peerfactorycontext.h"
 #include "scy/logger.h"
 
+#include "api/datachannelinterface.h"
+
 
 using std::endl;
 
@@ -68,7 +70,7 @@ webrtc::PeerConnectionInterface::RTCConfiguration& Peer::config()
 
 rtc::scoped_refptr<webrtc::MediaStreamInterface> Peer::createMediaStream()
 {
-    assert(_mode == Offer);
+    // assert(_mode == Offer);
     //assert(_context->factory);
     assert(!_stream);
     _stream = _context->factory->CreateLocalMediaStream(kStreamLabel);
@@ -114,7 +116,6 @@ void Peer::createConnection()
         }
     }
 }
-
 
 void Peer::closeConnection()
 {
@@ -240,7 +241,7 @@ void Peer::OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> strea
 
 void Peer::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> stream)
 {
-    assert(0 && "virtual");
+    LDebug(_peerid, ": OnDataChannel called for label ", stream->label());
 }
 
 
