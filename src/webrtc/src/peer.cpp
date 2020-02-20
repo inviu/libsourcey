@@ -98,6 +98,12 @@ void Peer::setPortRange(int minPort, int maxPort)
 
 void Peer::createConnection()
 {
+    webrtc::PeerConnectionInterface::IceServer server;
+    server.urls = {"turn:120.77.152.95:3478?transport=udp", "stun:120.77.152.95:3478"};
+    server.username = "simon";
+    server.password = "123456";
+    _config.servers.push_back(server);
+
     assert(_context->factory);
     _peerConnection = _context->factory->CreatePeerConnection(_config,
                                                               std::move(_portAllocator), nullptr, this);
