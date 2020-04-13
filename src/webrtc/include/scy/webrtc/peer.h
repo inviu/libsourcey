@@ -1,4 +1,4 @@
-///
+﻿///
 //
 // LibSourcey
 // Copyright (c) 2005, Sourcey <https://sourcey.com>
@@ -51,7 +51,7 @@ public:
 
     /// Create the peer connection once configuration, constraints and
     /// streams have been created.
-    virtual void createConnection();
+    virtual void createConnection(webrtc::PeerConnectionInterface::IceServer& iceServer);
 
     /// Close the peer connection.
     virtual void closeConnection();

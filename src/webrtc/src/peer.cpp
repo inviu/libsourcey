@@ -1,4 +1,4 @@
-///
+﻿///
 //
 // LibSourcey
 // Copyright (c) 2005, Sourcey <https://sourcey.com>
@@ -38,15 +38,7 @@ Peer::Peer(PeerManager* manager,
     , _peerConnection(nullptr)
     , _stream(nullptr)
 {
-    // webrtc::PeerConnectionInterface::IceServer stun;
-    // stun.uri = kGoogleStunServerUri;
-    // _config.servers.push_back(stun);
-
-    // _constraints.SetMandatoryReceiveAudio(true);
-    // _constraints.SetMandatoryReceiveVideo(true);
-    // _constraints.SetAllowDtlsSctpDataChannels();
 }
-
 
 Peer::~Peer()
 {
@@ -98,13 +90,9 @@ void Peer::setPortRange(int minPort, int maxPort)
 }
 
 
-void Peer::createConnection()
+void Peer::createConnection(webrtc::PeerConnectionInterface::IceServer& iceServer)
 {
-    webrtc::PeerConnectionInterface::IceServer server;
-    server.urls = {"turn:120.77.152.95:3478?transport=udp", "stun:120.77.152.95:3478"};
-    server.username = "simon";
-    server.password = "123456";
-    _config.servers.push_back(server);
+    _config.servers.push_back(iceServer);
 
     assert(_context->factory);
     _peerConnection = _context->factory->CreatePeerConnection(_config,

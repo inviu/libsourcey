@@ -1,4 +1,4 @@
-///
+﻿///
 //
 // LibSourcey
 // Copyright (c) 2005, Sourcey <https://sourcey.com>
@@ -37,10 +37,6 @@ const char kSessionDescriptionSdpName[] = "sdp";
 const char kAudioLabel[] = "audio_label";
 const char kVideoLabel[] = "video_label";
 const char kStreamLabel[] = "stream_label";
-
-/// Server URIs for ICE candidates.
-const char kGoogleStunServerUri[] = "stun:stun.l.google.com:19302";
-
 
 } } // namespace scy::wrtc
 
