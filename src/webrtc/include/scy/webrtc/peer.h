@@ -51,7 +51,7 @@ public:
 
     /// Create the peer connection once configuration, constraints and
     /// streams have been created.
-    virtual void createConnection(webrtc::PeerConnectionInterface::IceServer& iceServer);
+    virtual void createConnection();
 
     /// Close the peer connection.
     virtual void closeConnection();

@@ -90,10 +90,8 @@ void Peer::setPortRange(int minPort, int maxPort)
 }
 
 
-void Peer::createConnection(webrtc::PeerConnectionInterface::IceServer& iceServer)
+void Peer::createConnection()
 {
-    _config.servers.push_back(iceServer);
-
     assert(_context->factory);
     _peerConnection = _context->factory->CreatePeerConnection(_config,
                                                               std::move(_portAllocator), nullptr, this);
