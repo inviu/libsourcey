@@ -49,6 +49,7 @@ public:
     virtual void onStable(Peer* conn);
     virtual void onClosed(Peer* conn);
     virtual void onFailure(Peer* conn, const std::string& error);
+    virtual void OnIceConnectionChange(Peer* conn, webrtc::PeerConnectionInterface::IceConnectionState new_state);
 };
 
 

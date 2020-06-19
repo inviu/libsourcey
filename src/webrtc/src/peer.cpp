@@ -65,7 +65,7 @@ rtc::scoped_refptr<webrtc::MediaStreamInterface> Peer::createMediaStream()
     // assert(_mode == Offer);
     //assert(_context->factory);
     assert(!_stream);
-    _stream = _context->factory->CreateLocalMediaStream(kStreamLabel);
+    _stream = _context->factory->CreateLocalMediaStream(kStreamLabel + _peerid);
     return _stream;
 }
 
@@ -195,7 +195,8 @@ void Peer::OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState new
 
 void Peer::OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state)
 {
-    LDebug(_peerid, ": On ICE connection change: ", new_state)
+    LDebug(_peerid, ": On ICE connection change: ", new_state);
+    _manager->OnIceConnectionChange(this, new_state);
 }
 
 

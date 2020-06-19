@@ -40,7 +40,7 @@ public:
     void openStreamr();
 
     void addMediaTracks(webrtc::PeerConnectionFactoryInterface* factory,
-                        webrtc::MediaStreamInterface* stream);
+                        webrtc::MediaStreamInterface* stream, std::string peerId);
 
     void start();
     void stop();

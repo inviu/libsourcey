@@ -112,7 +112,7 @@ rtc::scoped_refptr<AudioPacketModule> MultiplexMediaCapturer::getAudioModule()
 
 void MultiplexMediaCapturer::addMediaTracks(
     webrtc::PeerConnectionFactoryInterface* factory,
-    webrtc::MediaStreamInterface* stream)
+    webrtc::MediaStreamInterface* stream, std::string peerId)
 {
     // This capturer is multicast, meaning it can be used as the source
     // for multiple Peer objects.
@@ -135,13 +135,13 @@ void MultiplexMediaCapturer::addMediaTracks(
         aopts.experimental_ns = false;
         aopts.stereo_swapping = false;
         stream->AddTrack(factory->CreateAudioTrack(
-            kAudioLabel, factory->CreateAudioSource(aopts)));
+            kAudioLabel + peerId, factory->CreateAudioSource(aopts)));
     }
 
     // Create and add the video stream
     if (_videoCapture->video()) {
         stream->AddTrack(factory->CreateVideoTrack(
-            kVideoLabel, factory->CreateVideoSource(createVideoSource())));
+            kVideoLabel + peerId, factory->CreateVideoSource(createVideoSource())));
     }
 
     // Default WebRTC video stream for testing

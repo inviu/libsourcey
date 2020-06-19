@@ -122,6 +122,10 @@ void PeerManager::onFailure(Peer* conn, const std::string& error)
         deleteLater<Peer>(conn); // async delete
 }
 
+void PeerManager::OnIceConnectionChange(Peer* conn, webrtc::PeerConnectionInterface::IceConnectionState new_state)
+{
+    LDebug("Ice connection change state: ", conn->peerid());
+}
 
 //void PeerManager::setContext(PeerFactoryContext* context)
 //{

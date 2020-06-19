@@ -88,8 +88,8 @@ void AudioPacketModule::onAudioCaptured(av::AudioPacket& packet)
 {
     LTrace("Audio frame captured")
 
-        // assert(_processThread->IsCurrent());
-        rtc::CritScope cs(&_critCallback);
+    // assert(_processThread->IsCurrent());
+    rtc::CritScope cs(&_critCallback);
     if (!_audioCallback || !_recording) {
         return;
     }
