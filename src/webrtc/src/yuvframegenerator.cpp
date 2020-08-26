@@ -8,7 +8,9 @@
 /// @addtogroup webrtc
 /// @{
 
+#if defined(_WIN32) || defined(_WIN64)
 #include <WinSock2.h>
+#endif
 
 #include "scy/webrtc/yuvframegenerator.h"
 

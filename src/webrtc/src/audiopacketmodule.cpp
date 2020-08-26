@@ -9,7 +9,9 @@
 /// @{
 
 
+#if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
+#endif
 
 #include "scy/webrtc/audiopacketmodule.h"
 

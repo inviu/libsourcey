@@ -8,7 +8,9 @@
 /// @addtogroup webrtc
 /// @{
 
+#if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
+#endif
 
 #include "scy/webrtc/peermanager.h"
 #include "scy/memory.h"

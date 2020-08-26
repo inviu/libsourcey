@@ -11,7 +11,9 @@
 #include <iostream>
 #include <string>
 
+#if defined(_WIN32) || defined(_WIN64)
 #include <WinSock2.h>
+#endif
 
 #include "scy/webrtc/audiopacketmodule.h"
 #include "scy/webrtc/multiplexmediacapturer.h"
